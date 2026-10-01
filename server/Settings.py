@@ -33,8 +33,8 @@ class Settings(dict):
             data = read_sublime_settings(self.file_name) or {}
 
             # Merging user settings
-            user = os.path.join(cdir, '..', '..', 'User', 'LiveReload.sublime-settings')
-            data_user = read_sublime_settings(user) or {}
+            self.user_file_name = os.path.join(cdir, '..', '..', 'User', 'LiveReload.sublime-settings')
+            data_user = read_sublime_settings(self.user_file_name) or {}
 
             for i in data:
                 self[i] = data[i]
@@ -61,7 +61,11 @@ class Settings(dict):
 
     def set(self, key, value):
         self[key] = value
-        self.save()
+        # persist only the changed key, in User file, leaving package defaults intact
+        data_user = read_sublime_settings(self.user_file_name) or {}
+        data_user[key] = value
+        with open(self.user_file_name, 'w', encoding='utf-8') as f:
+            json.dump(data_user, f, indent=4)
 
     def reload(self):
         self.__init__(self.file_name)
