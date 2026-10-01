@@ -6,7 +6,7 @@ try:
 except ValueError:
     from WSRequestHandler import WSRequestHandler
 
-from base64 import b64encode, b64decode, encodestring
+from base64 import b64encode, b64decode
 import sublime
 import LiveReload
 from struct import pack, unpack_from
@@ -109,10 +109,10 @@ Sec-WebSocket-Accept: %s\r
 
         data = array.array('B')
         mask = s2a(f['mask'])
-        data.fromstring(buf[pstart:pend])
+        data.frombytes(buf[pstart:pend])
         for i in range(len(data)):
             data[i] ^= mask[i % 4]
-        return data.tostring()
+        return data.tobytes()
 
     @staticmethod
     def encode_hybi(buf, opcode, base64=False):

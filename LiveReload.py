@@ -65,7 +65,7 @@ class LiveReload(threading.Thread, SimpleCallbackServer,
 
         path = os.path.join(sublime.packages_path(), 'LiveReload', 'web'
                             , 'dist', 'livereloadjs-sm2.js')
-        local = open(path, 'rU')
+        local = open(path, 'r')
         self.add_static_file('/livereload.js', local.read(),
                              'text/javascript')
 
