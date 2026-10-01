@@ -141,7 +141,7 @@ class PluginClass:
 
     @property
     def name(self):
-        return str(self.__class__).split('.')[1].rstrip("'>")
+        return self.__class__.__name__
 
     @property
     def isEnabled(self):
