@@ -24,7 +24,7 @@ class LiveReloadTest(sublime_plugin.ApplicationCommand):
 class LiveReloadHelp(sublime_plugin.ApplicationCommand):
 
     def run(self):
-        webbrowser.open_new_tab('https://github.com/alepez/LiveReload-sublimetext3#using'
+        webbrowser.open_new_tab('https://github.com/aik099/LiveReload-sublimetext4#using'
                                 )
 
 

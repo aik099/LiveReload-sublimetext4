@@ -1,0 +1,13 @@
+LiveReload 0.2.0
+
+The original repository (alepez/LiveReload-sublimetext3) is archived. LiveReload is now maintained at https://github.com/aik099/LiveReload-sublimetext4
+
+Fixes for current Sublime Text 4 builds (Python 3.14 plugin host), also working on the Python 3.3 and 3.8 plugin hosts:
+
+- Server didn't start (Python 3.9+ removed functions)
+- Enabled plug-ins weren't remembered after restart
+- Settings are saved to Packages/User/LiveReload.sublime-settings instead of overwriting the package's own settings
+- Requests failed when Sublime Text was started from a folder that was later deleted
+- User settings were ignored when the package folder is a symlink
+
+After upgrading, enabled plug-ins (e.g. "Simple Reload") need to be enabled once more via "LiveReload: Enable/disable plug-ins" in the Command Palette. Restart Sublime Text to start using this version.
