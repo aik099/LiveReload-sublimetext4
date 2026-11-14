@@ -16,12 +16,8 @@
                                 "caption": "Plugins",
                                 "children": [
                                     {
-                                        "caption": "Enable/disable plugins",
-                                        "command": "show_overlay",
-                                        "args": {
-                                            "overlay": "command_palette",
-                                            "text": "LiveReload: Enable/disable plugins"
-                                        }
+                                        "caption": "Enable/disable plug-ins",
+                                        "command": "live_reload_enable_plugin"
                                     }
                                 ]
                             },
@@ -29,18 +25,12 @@
                                 "caption": "-"
                             },
                             {
-                                "command": "open_file",
+                                "caption": "Settings",
+                                "command": "edit_settings",
                                 "args": {
-                                    "file": "${packages}/LiveReload/LiveReload.sublime-settings"
-                                },
-                                "caption": "Settings – Default"
-                            },
-                            {
-                                "command": "open_file",
-                                "args": {
-                                    "file": "${packages}/User/LiveReload.sublime-settings"
-                                },
-                                "caption": "Settings – User"
+                                    "base_file": "${packages}/LiveReload/LiveReload.sublime-settings",
+                                    "default": "{\n\t$0\n}\n"
+                                }
                             }
                         ]
                     }

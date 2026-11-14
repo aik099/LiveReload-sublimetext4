@@ -10,5 +10,13 @@
     {
         "caption": "LiveReload: Enable/disable plug-ins",
         "command": "live_reload_enable_plugin"
+    },
+    {
+        "caption": "Preferences: LiveReload Settings",
+        "command": "edit_settings",
+        "args": {
+            "base_file": "${packages}/LiveReload/LiveReload.sublime-settings",
+            "default": "{\n\t$0\n}\n"
+        }
     }
 ]

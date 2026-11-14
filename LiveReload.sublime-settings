@@ -1,3 +1,10 @@
 {
-    "enabled_plugins": []
+    // Port of the LiveReload server; the injected livereload.js script must use the same port
+    "port": 35729,
+
+    // Plug-ins enabled via "LiveReload: Enable/disable plug-ins" (class names, e.g. "SimpleRefresh")
+    "enabled_plugins": [],
+
+    // Apply changed CSS files without reloading the whole page (browser's default: true)
+    // "apply_css_live": true,
 }
