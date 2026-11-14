@@ -1,37 +1,24 @@
 # LiveReload for Sublime Text 3 and 4
 
-A web browser page reloading plugin for the [Sublime Text](http://sublimetext.com "Sublime Text") editor.
+A web browser page reloading plugin for the [Sublime Text](https://www.sublimetext.com "Sublime Text") editor.
 
 ## Installing
 
-With [Package Control](http://wbond.net/sublime_packages/package_control):
+With [Package Control](https://packagecontrol.io):
 
 1. Run “Package Control: Install Package” command, find and install `LiveReload` plugin.
 2. Restart ST editor (if required)
 
-### Manual install, Linux users
+### Manual install
+
+Open your Packages folder (Preferences > Browse Packages...), then:
 
 ```
-cd ~/.config/sublime-text-3/Packages
 rm -rf LiveReload
-git clone https://github.com/alepez/LiveReload-sublimetext3 LiveReload
+git clone https://github.com/aik099/LiveReload-sublimetext4 LiveReload
 ```
 
-### Manual install, OSX users
-
-```
-cd ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/
-rm -rf LiveReload
-git clone https://github.com/alepez/LiveReload-sublimetext3 LiveReload
-```
-
-### Manual install, OSX users (Sublime Text 4)
-
-```
-cd ~/Library/Application\ Support/Sublime\ Text/Packages/
-rm -rf LiveReload
-git clone https://github.com/adamserafini/LiveReload-sublimetext4 LiveReload
-```
+Restart Sublime Text afterwards.
 
 # Using
 
@@ -41,7 +28,7 @@ Enable desired plug-ins via Command Palette (Ctrl+Shift+P) add livereload.js to 
 <script>document.write('<script src="http://' + (location.host || '${1:localhost}').split(':')[0] + ':${2:35729}/livereload.js?snipver=1"></' + 'script>')</script>
 ```
 
-You can also use one of the extensions listed here http://livereload.com/extensions/
+You can also use a browser extension that implements the LiveReload protocol instead of the script tag.
 
 ## Available plug-ins:
 
@@ -63,7 +50,7 @@ First, install latest version of sass
 ```bash
 sudo gem install sass
 ```
-Activate the plugin in SublimeText3 via the `package settings -> livereload -> plugins -> enable/disable plugins` menu
+Activate the plugin via the `package settings -> livereload -> plugins -> enable/disable plugins` menu
 
 By default, the plugin save the compiled css in same dir of sources.
 You can change this by creating a `sass_config.json` file near your sources:
@@ -75,9 +62,12 @@ You can change this by creating a `sass_config.json` file near your sources:
 
 # Plug-in api
 
-https://livereload-for-sublime-text.readthedocs.org/en/latest/
+See the `PluginClass` docstrings in [server/PluginAPI.py](server/PluginAPI.py) and the bundled plug-ins (e.g. [SimpleReloadPlugin.py](SimpleReloadPlugin.py)) as examples.
 
-# Thanks
+# History
 
-The original plugin was written by [Janez Troha](https://github.com/dz0ny)
+- [dz0ny/LiveReload-sublimetext2](https://github.com/dz0ny) — the original plugin, written by [Janez Troha](https://github.com/dz0ny) for Sublime Text 2
+- [alepez/LiveReload-sublimetext3](https://github.com/alepez/LiveReload-sublimetext3) — Sublime Text 3 port, on Package Control since 2016 (archived)
+- [adamserafini/LiveReload-sublimetext4](https://github.com/adamserafini/LiveReload-sublimetext4) — Sublime Text 4 fixes
+- this repository — Python 3.14 plugin host support (Sublime Text 4 build 4213+), still working on the Python 3.3 and 3.8 hosts
 
