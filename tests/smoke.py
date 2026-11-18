@@ -1,5 +1,6 @@
 # Smoke test: loads the package like ST does (Packages/LiveReload without a root __init__.py, each top-level module
-# imported as LiveReload.<name>), then checks the server, a plug-in, and ST's reload and unload of the main module.
+# imported as LiveReload.<name>, then plugin_loaded()), then checks the server, a plug-in, a plug-in reload, and an
+# unload and load of the whole package (upgrade).
 # Run via tests/smoke.sh; Python 3.3 compatible.
 import os
 import sys
@@ -72,15 +73,33 @@ def save_reloads(ws, label):
     check(b'"reload"' in ws.recv(65536), label + ': save sends reload')
 
 
-# ST imports plug-ins in name order; the first one imports LiveReload.LiveReload, which starts the server
-for f in sorted(os.listdir(pkg_dir)):
-    if f.endswith('.py'):
-        importlib.import_module('LiveReload.' + f[:-3])
-lr = sys.modules['LiveReload.LiveReload']
-time.sleep(0.5)
+plugin_names = sorted('LiveReload.' + f[:-3] for f in os.listdir(pkg_dir) if f.endswith('.py'))
 
+
+def load_package():
+    # ST imports root-level files in name order, then calls their plugin_loaded() once all are loaded
+    for name in plugin_names:
+        importlib.import_module(name)
+    for name in plugin_names:
+        hook = getattr(sys.modules[name], 'plugin_loaded', None)
+        if hook:
+            hook()
+    time.sleep(0.5)
+    return sys.modules['LiveReload.server.core']
+
+
+def unload_package():
+    # package upgrade or disabling: plugin_unloaded(), then the module is dropped
+    for name in plugin_names:
+        hook = getattr(sys.modules[name], 'plugin_unloaded', None)
+        if hook:
+            hook()
+        del sys.modules[name]
+
+
+core = load_package()
 check(b' 200 ' in http_get('/livereload.js').split(b'\r\n')[0], 'livereload.js served')
-Plugin = lr.Plugin
+Plugin = core.Plugin
 names = [p.__name__ for p in Plugin.plugins]
 check(len(names) == 8, 'all plug-ins registered: ' + ', '.join(names))
 Plugin.togglePlugin(names.index('SimpleRefresh'))
@@ -89,23 +108,17 @@ with open(os.path.join(packages, 'User', 'LiveReload.sublime-settings')) as f:
 ws = ws_connect()
 save_reloads(ws, 'first load')
 
-# ST reloading a changed module in place: plugin_unloaded(), then reload with the module's globals kept
-old_api = lr.API
-lr.plugin_unloaded()
-check(ws.recv(65536) == b'', 'browser socket closed on unload')
-reload(lr)
-time.sleep(0.5)
-check(lr.API is not old_api, 'in-place reload started a new server')
-ws = ws_connect()
-save_reloads(ws, 'after in-place reload')
+# ST reloading a changed plug-in in place: its class replaces the old one, the server keeps running
+reload(sys.modules['LiveReload.SimpleReloadPlugin'])
+save_reloads(ws, 'after plug-in reload')
 
-# full unload (package upgrade, disabling the package), then a fresh import
-lr.plugin_unloaded()
-del sys.modules['LiveReload.LiveReload']
-lr = importlib.import_module('LiveReload.LiveReload')
-time.sleep(0.5)
+unload_package()
+check(ws.recv(65536) == b'', 'browser socket closed on unload')
+check(not [n for n in sys.modules if n.startswith('LiveReload.server')], 'server modules dropped on unload')
+new_core = load_package()
+check(new_core is not core, 'reload after unload runs fresh server code')
 ws = ws_connect()
-save_reloads(ws, 'after full unload')
+save_reloads(ws, 'after unload and load (upgrade), enabled plug-in remembered')
 
 check(sublime.errors == [], 'no error dialogs')
 print('SMOKE OK on Python ' + sys.version.split()[0])

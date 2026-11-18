@@ -8,7 +8,7 @@ import sys
 import sublime
 import sublime_plugin
 
-from . import LiveReload
+from .server import core as LiveReload
 
 
 class LessThread(threading.Thread):

@@ -6,7 +6,7 @@ import sys
 import sublime
 import sublime_plugin
 
-from . import LiveReload
+from .server import core as LiveReload
 
 
 class SimpleRefreshDelay(LiveReload.Plugin, sublime_plugin.EventListener):

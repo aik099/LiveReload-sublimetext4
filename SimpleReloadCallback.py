@@ -6,7 +6,7 @@ import sys
 import sublime
 import sublime_plugin
 
-from . import LiveReload
+from .server import core as LiveReload
 
 ##Modlue name must be the same as class or else callbacks won't work
 class SimpleReloadCallback(LiveReload.Plugin):

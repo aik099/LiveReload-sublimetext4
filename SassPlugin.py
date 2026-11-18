@@ -12,7 +12,7 @@ import shlex
 import re
 import json
 
-from . import LiveReload
+from .server import core as LiveReload
 
 
 class SassThread(threading.Thread):
