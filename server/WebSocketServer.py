@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
+import socket
 
 try:
     from .WebSocketClient import WebSocketClient
@@ -103,6 +104,14 @@ class WebSocketServer:
         """
         log.info("Stopping server")
         self.server.shutdown()
+        self.server.server_close()
+        # browsers reconnect to the next server only after their socket closes;
+        # shutdown() also ends the client thread's blocked read, which then cleans up the client
+        for client in list(self.server.clients):
+            try:
+                client.socket.shutdown(socket.SHUT_RDWR)
+            except Exception:
+                pass
 
     def start(self):
         """

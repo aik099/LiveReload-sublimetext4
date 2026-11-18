@@ -58,9 +58,9 @@ class LiveReload(threading.Thread, SimpleCallbackServer,
         SimpleResourceServer.__init__(self)
         LiveReloadAPI.__init__(self)
 
-    def run(self):
+    def bind(self):
         """
-        Start LiveReload
+        Bind the server port; done before start(), so stop() never meets a server that isn't serving yet
         """
 
         path = os.path.join(sublime.packages_path(), 'LiveReload', 'web'
@@ -79,15 +79,20 @@ class LiveReload(threading.Thread, SimpleCallbackServer,
             sublime.error_message('Port(' + str(self.port)
                                   + ') is already using, trying ('
                                   + str(self.port + 1) + ')')
-            time.sleep(3)
             self.start_server(self.port + 1)
 
     def start_server(self, port):
         """
-        Start the server.
+        Bind the server.
         """
 
         self.ws_server = WebSocketServer(port, self.version)
+
+    def run(self):
+        """
+        Serve requests until stopped.
+        """
+
         self.ws_server.start()
 
     @atexit.register
@@ -104,7 +109,22 @@ if sublime.platform != 'build':
         API  # kept when ST reloads this module in place
     except NameError:
         API = LiveReload()
+        API.bind()
         API.start()
+
+
+def plugin_unloaded():
+    """
+    Stop the server when ST unloads or reloads this module (e.g. a package upgrade), so the next load can bind the port.
+    """
+
+    global API
+    try:
+        server = API
+    except NameError:
+        return
+    del API
+    server.ws_server.stop()
 
 
 def http_callback(callback_f):
