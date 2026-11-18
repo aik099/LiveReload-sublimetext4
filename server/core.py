@@ -61,9 +61,11 @@ class LiveReload(threading.Thread, SimpleCallbackServer,
         try:
             self.start_server(self.port)
         except Exception:
-            sublime.error_message('Port(' + str(self.port)
-                                  + ') is already using, trying ('
-                                  + str(self.port + 1) + ')')
+            # no error_message(): the dialog is modal for the whole app, and one hidden behind other windows
+            # looks like a frozen Sublime Text
+            message = 'LiveReload: port %d is busy, using %d' % (self.port, self.port + 1)
+            print(message)
+            sublime.status_message(message)
             self.start_server(self.port + 1)
 
     def start_server(self, port):
