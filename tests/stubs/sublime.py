@@ -4,6 +4,7 @@ import os
 
 PACKAGES = os.environ['ST_PACKAGES']
 errors = []
+statuses = []
 
 
 def packages_path():
@@ -24,9 +25,11 @@ def set_timeout(f, ms=0):
 
 def status_message(msg):
     print('STATUS: ' + msg)
+    statuses.append(msg)
 
 
 def error_message(msg):
+    # modal for the whole ST app until answered
     print('ERROR DIALOG: ' + msg)
     errors.append(msg)
 

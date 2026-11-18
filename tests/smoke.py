@@ -40,8 +40,8 @@ def check(ok, msg):
     print('ok: ' + msg)
 
 
-def http_get(path):
-    s = socket.create_connection(('127.0.0.1', PORT), 5)
+def http_get(path, port=PORT):
+    s = socket.create_connection(('127.0.0.1', port), 5)
     s.sendall(('GET ' + path + ' HTTP/1.0\r\nHost: localhost\r\n\r\n').encode())
     data = b''
     while True:
@@ -121,6 +121,20 @@ ws = ws_connect()
 save_reloads(ws, 'after unload and load (upgrade), enabled plug-in remembered')
 
 check(sublime.errors == [], 'no error dialogs')
+
+# busy port: the fallback port serves, reported without a modal dialog (one hidden behind windows froze ST)
+unload_package()
+blocker = socket.socket()
+blocker.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+blocker.bind(('', PORT))
+blocker.listen(1)
+core = load_package()
+check(b' 200 ' in http_get('/livereload.js', PORT + 1).split(b'\r\n')[0], 'busy port: fallback port serves')
+check(sublime.errors == [], 'busy port: no modal dialog')
+check([m for m in sublime.statuses if 'busy' in m], 'busy port: reported in the status bar')
+unload_package()
+blocker.close()
+
 print('SMOKE OK on Python ' + sys.version.split()[0])
 sys.stdout.flush()
 os._exit(0)
