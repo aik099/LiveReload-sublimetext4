@@ -108,7 +108,7 @@ class CompassThread(threading.Thread):
         # Find the file to refresh from the console output
         if compiled:
             print("Compass : " + compiled.decode("utf-8"));
-            matches = re.findall('\S+\.css', compiled.decode("utf-8"))
+            matches = re.findall(r'\S+\.css', compiled.decode("utf-8"))
             if len(matches) > 0:
                 for match in matches:
                     self.on_compile(match)

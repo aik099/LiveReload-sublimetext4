@@ -62,7 +62,7 @@ class SassThread(threading.Thread):
 
         source = os.path.join(self.dirname, self.filename)
         destinationDir = self.dirname if self.config['destination_dir'] is None else self.config['destination_dir']
-        destination = os.path.abspath(os.path.join(self.dirname, destinationDir, re.sub("\.(sass|scss)", '.css', self.filename)))
+        destination = os.path.abspath(os.path.join(self.dirname, destinationDir, re.sub(r"\.(sass|scss)", '.css', self.filename)))
 
         cmd = self.command + ' "' + source + '":"' + destination + '"'
 
@@ -78,7 +78,7 @@ class SassThread(threading.Thread):
         # Find the file to refresh from the console output
         if compiled:
             print("[LiveReload Sass] reloading : " + compiled.decode("utf-8"));
-            matches = re.findall('\S+\.css', compiled.decode("utf-8"))
+            matches = re.findall(r'\S+\.css', compiled.decode("utf-8"))
             if len(matches) > 0:
                 for match in matches:
                     self.on_compile(match)

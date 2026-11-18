@@ -1,0 +1,5 @@
+LiveReload 0.2.2
+
+Fixes plug-ins (e.g. "Simple Reload") failing to load when LiveReload is installed with Package Control 4, which left version 0.2.1 without working page reloads.
+
+Restart Sublime Text to start using this version.
