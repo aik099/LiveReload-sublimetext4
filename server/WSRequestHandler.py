@@ -5,7 +5,7 @@ try:
 except ImportError:
     from http.server import SimpleHTTPRequestHandler
 
-import LiveReload
+from . import live_reload
 
 try:
     from urlparse import urlparse
@@ -46,11 +46,11 @@ class WSRequestHandler(SimpleHTTPRequestHandler):
             self.last_message = '101 Switching Protocols'
         else:
             req = urlparse(self.path)
-            _file = LiveReload.API.has_file(req.path)
-            _httpcallback = LiveReload.API.has_callback(req.path)
+            _file = live_reload().API.has_file(req.path)
+            _httpcallback = live_reload().API.has_callback(req.path)
             if _httpcallback:
                 try:
-                    plugin = sys.modules['LiveReload'].PluginAPI.PluginFactory.getPlugin(LiveReload.Plugin, _httpcallback['cls'])
+                    plugin = live_reload().Plugin.getPlugin(_httpcallback['cls'])
                     func = getattr(plugin, _httpcallback['name'], None)
                     if func:
                         res = func(req)

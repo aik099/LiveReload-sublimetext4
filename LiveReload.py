@@ -101,8 +101,8 @@ class LiveReload(threading.Thread, SimpleCallbackServer,
 
 if sublime.platform != 'build':
     try:
-        sys.modules['LiveReload'].API
-    except Exception:
+        API  # kept when ST reloads this module in place
+    except NameError:
         API = LiveReload()
         API.start()
 
@@ -124,8 +124,7 @@ def http_callback(callback_f):
 
     callback_f.path = 'http://localhost:35729/callback/%s/%s' \
         % (callback_f.__module__.lower(), callback_f.__name__)
-    sys.modules['LiveReload'
-                ].API.callbacks.append({'path': callback_f.path,
+    API.callbacks.append({'path': callback_f.path,
             'name': callback_f.__name__, 'cls': callback_f.__module__})
     return callback_f
 
@@ -149,7 +148,6 @@ def websocket_callback(callback_f):
 
     callback_f.path = 'SM2.%s.%s' % (callback_f.__module__.lower(),
             callback_f.__name__)
-    sys.modules['LiveReload'
-                ].API.ws_callbacks.append({'path': callback_f.path,
+    API.ws_callbacks.append({'path': callback_f.path,
             'name': callback_f.__name__, 'cls': callback_f.__module__})
     return callback_f

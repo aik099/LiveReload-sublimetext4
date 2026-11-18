@@ -6,11 +6,7 @@ import sys
 import sublime
 import sublime_plugin
 
-# fix for import order
-
-sys.path.append(os.path.join(sublime.packages_path(), 'LiveReload'))
-LiveReload = __import__('LiveReload')
-sys.path.remove(os.path.join(sublime.packages_path(), 'LiveReload'))
+from . import LiveReload
 
 
 class SimpleRefreshDelay(LiveReload.Plugin, sublime_plugin.EventListener):

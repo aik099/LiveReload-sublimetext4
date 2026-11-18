@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import LiveReload
 import json
 import sublime
+from . import live_reload
 try:
     from .Settings import Settings
 except ValueError:
@@ -111,11 +111,10 @@ class PluginFactory(type):
             except Exception as e:
                 log(e)
         try:
-            _wscallback = LiveReload.API.has_callback(data.path)
+            _wscallback = live_reload().API.has_callback(data.path)
             if _wscallback:
                 try:
-                    func = getattr(sys.modules['LiveReload'
-                                   ].Plugin.getPlugin(_wscallback['mcs'
+                    func = getattr(live_reload().Plugin.getPlugin(_wscallback['mcs'
                                    ]), _wscallback['name'], None)
                     if func:
                         func(data)
@@ -150,7 +149,7 @@ class PluginClass:
     def should_run(self, filename=False):
         """ Returns True if specified filename is allowed for plug-in, and plug-in itself is enabled """
         if self.isEnabled:
-            all_filters = LiveReload.Plugin.listAllDefinedFilters()
+            all_filters = live_reload().Plugin.listAllDefinedFilters()
 
             def otherPluginsWithFilter():
                 for f in all_filters:
@@ -181,7 +180,7 @@ class PluginClass:
         - (string) content_type; Mime-type of file you want to serve
         """
 
-        LiveReload.API.add_static_file(req_path, blob, content_type)
+        live_reload().API.add_static_file(req_path, blob, content_type)
 
     def sendCommand(
         self,
@@ -212,7 +211,7 @@ class PluginClass:
 
                 # if we have defined filter
 
-                LiveReload.API.send(json.dumps(settings))
+                live_reload().API.send(json.dumps(settings))
             else:
                 log('Skipping '+ self.name)
 
@@ -238,7 +237,7 @@ class PluginClass:
     def listClients(self):
         """ returns list with all connected clients with their req_url and origin"""
 
-        return LiveReload.API.list_clients()
+        return live_reload().API.list_clients()
 
     def onReceive(self, data, origin):
         """

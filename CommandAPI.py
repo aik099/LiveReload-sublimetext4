@@ -3,7 +3,6 @@
 
 import sublime
 import sublime_plugin
-import LiveReload
 import webbrowser
 import os
 

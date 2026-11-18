@@ -8,7 +8,7 @@ except ValueError:
 
 from base64 import b64encode, b64decode
 import sublime
-import LiveReload
+from . import live_reload
 from struct import pack, unpack_from
 import array
 import sys
@@ -274,7 +274,7 @@ Sec-WebSocket-Accept: %s\r
                     self.handler.updateInfo()
                 else:
                     try:
-                        sys.modules['LiveReload'].PluginAPI.PluginFactory.dispatch_OnReceive(LiveReload.Plugin, data.get('payload'),
+                        live_reload().Plugin.dispatch_OnReceive(data.get('payload'),
                                                         self.headers.get('Origin'))
                     except Exception as e:
                         log.exception('API error')
