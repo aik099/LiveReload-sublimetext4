@@ -1,7 +1,9 @@
 # Not shipped in Package Control downloads
 .gitattributes export-ignore
 .gitignore export-ignore
+.github/ export-ignore
 docs/ export-ignore
+tests/ export-ignore
 web/test/ export-ignore
 web/src/ export-ignore
 web/Gruntfile.coffee export-ignore

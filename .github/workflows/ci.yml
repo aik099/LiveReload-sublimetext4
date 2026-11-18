@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Smoke test (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        # ST plugin host versions: 3.3 (ST3, optional in ST4), 3.8 (older ST4 builds), 3.14 (current ST4 builds)
+        python: ['3.3', '3.8', '3.14']
+    steps:
+      - uses: actions/checkout@v5
+      # python:<version> Docker image: setup-python has no 3.3
+      - run: tests/smoke.sh ${{ matrix.python }}
+
+  syntax:
+    name: Syntax warnings (newest Python)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - run: python -W error -m compileall -q .
+
+  package-review:
+    name: Package Control review
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - run: pip install git+https://github.com/packagecontrol/st_package_reviewer
+      # the package as Package Control downloads it (export-ignore applied)
+      - run: |
+          mkdir "$RUNNER_TEMP/LiveReload"
+          git archive HEAD | tar -x -C "$RUNNER_TEMP/LiveReload"
+          st_package_reviewer "$RUNNER_TEMP/LiveReload"
