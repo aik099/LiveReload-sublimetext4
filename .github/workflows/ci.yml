@@ -43,7 +43,8 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.14'
-      - run: pip install git+https://github.com/packagecontrol/st_package_reviewer
+      # the reviewer the Package Control channel runs (kaste/st_package_reviewer/gh_action)
+      - run: pip install git+https://github.com/kaste/st_package_reviewer@v1.4.0
       # the package as Package Control downloads it (export-ignore applied)
       - run: |
           mkdir "$RUNNER_TEMP/LiveReload"
